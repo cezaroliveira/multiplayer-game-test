@@ -21,38 +21,54 @@
       const currentPlayerId = 'player1';
 
       // Define the game elements
-      const game = {
+      const game = createGame();
+
+      function createGame() {
+        const state = {
           players: {
-              player1: { x: 1, y: 1 },
-              player2: { x: 9, y: 9 }
+            player1: { x: 1, y: 1 },
+            player2: { x: 9, y: 9 },
           },
           fruits: {
-              fruit1: { x: 3, y: 1 }
+            fruit1: { x: 3, y: 1 },
+          },
+        };
+
+        function movePlayer(command) {
+          const keyPressed = event.key;
+
+          const currentPlayer = state.players[currentPlayerId];
+
+          if (keyPressed === "ArrowUp" && currentPlayer.y > 0) {
+            currentPlayer.y--;
+          } else if (keyPressed === "ArrowDown" && currentPlayer.y + 1 < screen.height) {
+            currentPlayer.y++;
+          } else if (keyPressed === "ArrowLeft" && currentPlayer.x > 0) {
+            currentPlayer.x--;
+          } else if (keyPressed === "ArrowRight" && currentPlayer.x + 1 < screen.width) {
+            currentPlayer.x++;
           }
+        }
+
+        return {
+          state,
+          movePlayer
+        };
       }
 
-      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener("keydown", handleKeyDown);
 
       function handleKeyDown(event) {
         const keyPressed = event.key;
 
-        const currentPlayer = game.players[currentPlayerId];
+        const currentPlayer = game.state.players[currentPlayerId];
 
-        if (keyPressed === 'ArrowUp' && currentPlayer.y > 0) {
-          currentPlayer.y--;
+        const command = {
+          playerId: 'player1',
+          keyPressed
         }
 
-        else if (keyPressed === 'ArrowDown' && currentPlayer.y + 1 < screen.height) {
-          currentPlayer.y++;
-        }
-        
-        else if (keyPressed === 'ArrowLeft' && currentPlayer.x > 0) {
-          currentPlayer.x--;
-        }
-        
-        else if (keyPressed === 'ArrowRight' && currentPlayer.x + 1 < screen.width) {
-          currentPlayer.x++;
-        }
+        game.movePlayer(command);
       }
 
       renderScreen();
@@ -61,12 +77,11 @@
        * Render the screen elements
        */
       function renderScreen() {
-        
         // Clear all the screen area
         context.clearRect(0, 0, screen.width, screen.height);
-        
-        renderElements(game.players, 'black');
-        renderElements(game.fruits, 'green');
+
+        renderElements(game.state.players, 'black');
+        renderElements(game.state.fruits, 'green');
 
         /**
          * Render the elements
