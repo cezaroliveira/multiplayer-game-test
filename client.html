@@ -34,19 +34,37 @@
           },
         };
 
+        const acceptedMoves = {
+          ArrowUp(player) {
+            if (player.y > 0) {
+              player.y--;
+            }
+          },
+          ArrowDown(player) {
+            if (player.y + 1 < screen.height) {
+              player.y++;
+            }
+          },
+          ArrowLeft(player) {
+            if (player.x > 0) {
+              player.x--;
+            }
+          },
+          ArrowRight(player) {
+            if (player.x + 1 < screen.width) {
+              player.x++;
+            }
+          }
+        }
+
         function movePlayer(command) {
-          const keyPressed = event.key;
+          const keyPressed = command.keyPressed;
 
           const currentPlayer = state.players[currentPlayerId];
+          const moveFunction = acceptedMoves[keyPressed];
 
-          if (keyPressed === "ArrowUp" && currentPlayer.y > 0) {
-            currentPlayer.y--;
-          } else if (keyPressed === "ArrowDown" && currentPlayer.y + 1 < screen.height) {
-            currentPlayer.y++;
-          } else if (keyPressed === "ArrowLeft" && currentPlayer.x > 0) {
-            currentPlayer.x--;
-          } else if (keyPressed === "ArrowRight" && currentPlayer.x + 1 < screen.width) {
-            currentPlayer.x++;
+          if (moveFunction) {
+            moveFunction(currentPlayer);
           }
         }
 
@@ -85,7 +103,6 @@
             keyPressed
           }
 
-          // game.movePlayer(command);
           notifyAll(command);
         }
 
@@ -93,7 +110,6 @@
           subscribe
         }
       }
-
 
       renderScreen();
 
