@@ -12,6 +12,7 @@
         height: 400px;
       }
     </style>
+    <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
     <canvas id="canvas" width="10" height="10"></canvas>
@@ -24,12 +25,24 @@
       const currentPlayerId = 'player1';
 
       // Define the game elements
-      const game = createGame(currentPlayerId, canvas);
+      const game = createGame(currentPlayerId);
 
       const keyboardListener = createKeyboardListener(currentPlayerId);
       keyboardListener.subscribe(game.movePlayer);
 
       renderScreen(game, canvas);
+
+      const socket = io();
+
+      socket.on('connect', () => {
+        const playerId = socket.id;
+        console.log(`> Player connected on client-side with id ${playerId}`);
+      });
+
+      socket.on('setup', (state) => {
+        console.log(`> Receiving setup event from server...`, state);
+        game.state = state;
+      });
     </script>
   </body>
 </html>

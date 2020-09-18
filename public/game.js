@@ -1,7 +1,7 @@
 /**
  * Factory to create the game.
  */
-export default function createGame(currentPlayerId, canvas) {
+export default function createGame(currentPlayerId) {
   // State of game elements
   const state = {
     players: {
@@ -21,8 +21,8 @@ export default function createGame(currentPlayerId, canvas) {
       },
     },
     screen: {
-      width: canvas.width,
-      height: canvas.height
+      width: 10,
+      height: 10
     },
     currentPlayerId: currentPlayerId
   };
@@ -45,8 +45,8 @@ export default function createGame(currentPlayerId, canvas) {
 
   function addElement(elementsArray, command) {
     elementsArray[command.id] = {
-      positionX: command.positionX,
-      positionY: command.positionY,
+      positionX: command.positionX ? command.positionX : Math.floor(Math.random() * state.screen.width),
+      positionY: command.positionY ? command.positionY : Math.floor(Math.random() * state.screen.height),
     };
   }
 
@@ -78,7 +78,7 @@ export default function createGame(currentPlayerId, canvas) {
       return false;
     },
     ArrowDown(player) {
-      if (player.positionY + 1 < canvas.height) {
+      if (player.positionY + 1 < state.screen.height) {
         player.positionY++;
         return true;
       }
@@ -92,7 +92,7 @@ export default function createGame(currentPlayerId, canvas) {
       return false;
     },
     ArrowRight(player) {
-      if (player.positionX + 1 < canvas.width) {
+      if (player.positionX + 1 < state.screen.width) {
         player.positionX++;
         return true;
       }
