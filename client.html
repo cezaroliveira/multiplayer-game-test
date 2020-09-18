@@ -38,6 +38,33 @@
           },
         };
 
+        function addPlayer(command) {
+          addElement(state.players, command);
+        }
+
+        function removePlayer(command) {
+          removeElement(state.players, command);
+        }
+
+        function addFruit(command) {
+          addElement(state.fruits, command);
+        }
+
+        function removeFruit(command) {
+          removeElement(state.fruits, command);
+        }
+
+        function addElement(elementsArray, command) {
+          elementsArray[command.id] = {
+            positionX: command.positionX,
+            positionY: command.positionY
+          };
+        }
+
+        function removeElement(elementsArray, command) {
+          delete elementsArray[command.id];
+        }
+
         /**
          * Accepted player moves. Each function name is equivalent to "event.key" from keyboard listener.
          */
@@ -73,14 +100,18 @@
           const currentPlayer = state.players[currentPlayerId];
           const moveFunction = acceptedMoves[keyPressed];
 
-          if (moveFunction) {
+          if (currentPlayer && moveFunction) {
             moveFunction(currentPlayer);
           }
         }
 
         return {
           state,
-          movePlayer
+          movePlayer,
+          addPlayer,
+          removePlayer,
+          addFruit,
+          removeFruit
         };
       }
 
