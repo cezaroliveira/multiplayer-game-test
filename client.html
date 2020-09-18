@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
     <title>Teste jogo multiplayer</title>
     <style>
-      #screen {
+      #canvas {
         border: 10px solid #ccc;
         image-rendering: pixelated;
         image-rendering: crisp-edges;
@@ -14,179 +14,22 @@
     </style>
   </head>
   <body>
-    <canvas id="screen" width="10" height="10"></canvas>
-    <script>
-      const screen = document.getElementById('screen');
-      const context = screen.getContext('2d');
+    <canvas id="canvas" width="10" height="10"></canvas>
+    <script type="module">
+      import createKeyboardListener from './keyboard-listener.js'
+      import createGame from './game.js'
+      import renderScreen from './render-screen.js'
+
+      const canvas = document.getElementById('canvas');
       const currentPlayerId = 'player1';
 
       // Define the game elements
-      const game = createGame();
+      const game = createGame(currentPlayerId, canvas);
 
-      /**
-       * Factory to create the game.
-       */
-      function createGame() {
-        // State of game elements
-        const state = {
-          players: {
-            player1: { positionX: 1, positionY: 1 },
-            player2: { positionX: 9, positionY: 9 },
-          },
-          fruits: {
-            fruit1: { positionX: 3, positionY: 1 },
-          },
-        };
-
-        function addPlayer(command) {
-          addElement(state.players, command);
-        }
-
-        function removePlayer(command) {
-          removeElement(state.players, command);
-        }
-
-        function addFruit(command) {
-          addElement(state.fruits, command);
-        }
-
-        function removeFruit(command) {
-          removeElement(state.fruits, command);
-        }
-
-        function addElement(elementsArray, command) {
-          elementsArray[command.id] = {
-            positionX: command.positionX,
-            positionY: command.positionY
-          };
-        }
-
-        function removeElement(elementsArray, command) {
-          delete elementsArray[command.id];
-        }
-
-        /**
-         * Accepted player moves. Each function name is equivalent to "event.key" from keyboard listener.
-         */
-        const acceptedMoves = {
-          ArrowUp(player) {
-            if (player.positionY > 0) {
-              player.positionY--;
-            }
-          },
-          ArrowDown(player) {
-            if (player.positionY + 1 < screen.height) {
-              player.positionY++;
-            }
-          },
-          ArrowLeft(player) {
-            if (player.positionX > 0) {
-              player.positionX--;
-            }
-          },
-          ArrowRight(player) {
-            if (player.positionX + 1 < screen.width) {
-              player.positionX++;
-            }
-          }
-        }
-
-        /**
-         * Move the player.
-         */
-        function movePlayer(command) {
-          const keyPressed = command.keyPressed;
-
-          const currentPlayer = state.players[currentPlayerId];
-          const moveFunction = acceptedMoves[keyPressed];
-
-          if (currentPlayer && moveFunction) {
-            moveFunction(currentPlayer);
-          }
-        }
-
-        return {
-          state,
-          movePlayer,
-          addPlayer,
-          removePlayer,
-          addFruit,
-          removeFruit
-        };
-      }
-
-      const keyboardListener = createKeyboardListener();
+      const keyboardListener = createKeyboardListener(currentPlayerId);
       keyboardListener.subscribe(game.movePlayer);
 
-      /**
-       * Factory that create a keyboard listener.
-       */
-      function createKeyboardListener() {
-
-        const observers = [];
-
-        /**
-         * Subscribe a function that will execute a command { playerId, keyPressed }.
-         */
-        function subscribe(observerFunction) {
-          observers.push(observerFunction);
-        }
-
-        /**
-         * Notify all the subscribe functions to execute a command { playerId, keyPressed }.
-         */
-        function notifyAll(command) {
-          for (const observerFunction of observers) {
-            observerFunction(command);
-          }
-        }
-
-        document.addEventListener("keydown", handleKeyDown);
-
-        function handleKeyDown(event) {
-          const keyPressed = event.key;
-
-          const currentPlayer = game.state.players[currentPlayerId];
-
-          const command = {
-            id: 'player1',
-            keyPressed
-          }
-
-          notifyAll(command);
-        }
-
-        return {
-          subscribe
-        }
-      }
-
-      renderScreen();
-
-      /**
-       * Render the screen elements
-       */
-      function renderScreen() {
-        // Clear all the screen area
-        context.clearRect(0, 0, screen.width, screen.height);
-
-        renderElements(game.state.players, 'black');
-        renderElements(game.state.fruits, 'green');
-
-        /**
-         * Render the elements
-         */
-        function renderElements(elementsArray, color) {
-          for (const elementId in elementsArray) {
-            const element = elementsArray[elementId];
-            context.fillStyle = color;
-            context.fillRect(element.positionX, element.positionY, 1, 1);
-          }
-        }
-
-        // Callback to update the screen continually
-        requestAnimationFrame(renderScreen);
-      }
+      renderScreen(game, canvas);
     </script>
   </body>
 </html>
