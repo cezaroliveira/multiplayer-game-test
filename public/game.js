@@ -54,6 +54,18 @@ export default function createGame(currentPlayerId, canvas) {
     delete elementsArray[command.id];
   }
 
+  function checkCollision() {
+    for (const fruitId in state.fruits) {
+      const fruit = state.fruits[fruitId];
+      const player = state.players[state.currentPlayerId];
+
+      if (player.positionX === fruit.positionX && player.positionY === fruit.positionY) {
+        delete state.fruits[fruitId];
+        break;
+      }
+    }
+  }
+
   /**
    * Accepted player moves. Each function name is equivalent to "event.key" from keyboard listener.
    */
@@ -91,6 +103,7 @@ export default function createGame(currentPlayerId, canvas) {
 
     if (currentPlayer && moveFunction) {
       moveFunction(currentPlayer);
+      checkCollision();
     }
   }
 
