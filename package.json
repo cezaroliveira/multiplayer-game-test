@@ -1,0 +1,28 @@
+{
+  "name": "multiplayer-game-test",
+  "version": "1.0.0",
+  "description": "Test of multiplayer game in Javascript",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo teste"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cezaroliveira/multiplayer-game-test.git"
+  },
+  "keywords": [
+    "javascript",
+    "game",
+    "multiplayer"
+  ],
+  "author": "Cezar Oliveira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cezaroliveira/multiplayer-game-test/issues"
+  },
+  "homepage": "https://github.com/cezaroliveira/multiplayer-game-test#readme",
+  "dependencies": {
+    "express": "4.17.1"
+  }
+}
