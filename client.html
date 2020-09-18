@@ -30,34 +30,36 @@
         // State of game elements
         const state = {
           players: {
-            player1: { x: 1, y: 1 },
-            player2: { x: 9, y: 9 },
+            player1: { positionX: 1, positionY: 1 },
+            player2: { positionX: 9, positionY: 9 },
           },
           fruits: {
-            fruit1: { x: 3, y: 1 },
+            fruit1: { positionX: 3, positionY: 1 },
           },
         };
 
-        // Accepted player moves
+        /**
+         * Accepted player moves. Each function name is equivalent to "event.key" from keyboard listener.
+         */
         const acceptedMoves = {
           ArrowUp(player) {
-            if (player.y > 0) {
-              player.y--;
+            if (player.positionY > 0) {
+              player.positionY--;
             }
           },
           ArrowDown(player) {
-            if (player.y + 1 < screen.height) {
-              player.y++;
+            if (player.positionY + 1 < screen.height) {
+              player.positionY++;
             }
           },
           ArrowLeft(player) {
-            if (player.x > 0) {
-              player.x--;
+            if (player.positionX > 0) {
+              player.positionX--;
             }
           },
           ArrowRight(player) {
-            if (player.x + 1 < screen.width) {
-              player.x++;
+            if (player.positionX + 1 < screen.width) {
+              player.positionX++;
             }
           }
         }
@@ -116,7 +118,7 @@
           const currentPlayer = game.state.players[currentPlayerId];
 
           const command = {
-            playerId: 'player1',
+            id: 'player1',
             keyPressed
           }
 
@@ -147,7 +149,7 @@
           for (const elementId in elementsArray) {
             const element = elementsArray[elementId];
             context.fillStyle = color;
-            context.fillRect(element.x, element.y, 1, 1);
+            context.fillRect(element.positionX, element.positionY, 1, 1);
           }
         }
 
