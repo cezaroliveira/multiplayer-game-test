@@ -73,22 +73,30 @@ export default function createGame(currentPlayerId, canvas) {
     ArrowUp(player) {
       if (player.positionY > 0) {
         player.positionY--;
+        return true;
       }
+      return false;
     },
     ArrowDown(player) {
       if (player.positionY + 1 < canvas.height) {
         player.positionY++;
+        return true;
       }
+      return false;
     },
     ArrowLeft(player) {
       if (player.positionX > 0) {
         player.positionX--;
+        return true;
       }
+      return false;
     },
     ArrowRight(player) {
       if (player.positionX + 1 < canvas.width) {
         player.positionX++;
+        return true;
       }
+      return false;
     },
   };
 
@@ -102,8 +110,9 @@ export default function createGame(currentPlayerId, canvas) {
     const moveFunction = acceptedMoves[keyPressed];
 
     if (currentPlayer && moveFunction) {
-      moveFunction(currentPlayer);
-      checkCollision();
+      if (moveFunction(currentPlayer)) {
+        checkCollision();
+      }
     }
   }
 
