@@ -5,20 +5,20 @@ export default function createGame(currentPlayerId) {
   // State of game elements
   const state = {
     players: {
-      player1: {
-        positionX: 1,
-        positionY: 1
-      },
-      player2: {
-        positionX: 9,
-        positionY: 9
-      },
+      // player1: {
+      //   positionX: 1,
+      //   positionY: 1
+      // },
+      // player2: {
+      //   positionX: 9,
+      //   positionY: 9
+      // },
     },
     fruits: {
-      fruit1: {
-        positionX: 3,
-        positionY: 1
-      },
+      // fruit1: {
+      //   positionX: 3,
+      //   positionY: 1
+      // },
     },
     screen: {
       width: 10,
@@ -26,6 +26,10 @@ export default function createGame(currentPlayerId) {
     },
     currentPlayerId: currentPlayerId
   };
+
+  function setState(newState) {
+    Object.assign(state, newState)
+  }
 
   function addPlayer(command) {
     addElement(state.players, command);
@@ -118,6 +122,7 @@ export default function createGame(currentPlayerId) {
 
   return {
     state,
+    setState,
     movePlayer,
     addPlayer,
     removePlayer,

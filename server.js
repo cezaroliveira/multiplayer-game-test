@@ -19,21 +19,14 @@ sockets.on('connection', (socket) => {
 
   game.addPlayer({ id: playerId });
 
+  // Emmit the 'setup' event and send a game.state
   socket.emit('setup', game.state);
 
+  // Listen the 'disconnect' event to execute the business logic
   socket.on('disconnect', () => {
     console.log(`> Player ${playerId} disconnected`);
     game.removePlayer({ id: playerId });
   });
-});
-
-sockets.on('', (socket) => {
-  const playerId = socket.id;
-  console.log(`> Player connected on server-side with id ${playerId}`);
-
-  game.state.currentPlayerId = playerId;
-
-  sockets.emit('setup', game.state);
 });
 
 const port = 3000;
