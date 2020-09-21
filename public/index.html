@@ -45,6 +45,18 @@
         console.log(`> Receiving setup event from server...`);
         game.setState(state)
       });
+
+      // Listen the 'add-player' event from server-side to execute the client render logic
+      socket.on('add-player', (command) => {
+        console.log(`> Receiving ${command.type} -> ${command.id}`);
+        game.addPlayer(command);
+      });
+
+      // Listen the 'remove-player' event from server-side to execute the client render logic
+      socket.on('remove-player', (command) => {
+        console.log(`> Receiving ${command.type} -> ${command.id}`);
+        game.removePlayer(command);
+      });
     </script>
   </body>
 </html>

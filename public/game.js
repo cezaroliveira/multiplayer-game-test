@@ -27,16 +27,42 @@ export default function createGame(currentPlayerId) {
     currentPlayerId: currentPlayerId
   };
 
+  const observers = [];
+
+  /**
+   * Subscribe a function that will execute a command { playerId, keyPressed }.
+   */
+  function subscribe(observerFunction) {
+    observers.push(observerFunction);
+  }
+
+  /**
+   * Notify all the subscribe functions to execute a command { playerId, keyPressed }.
+   */
+  function notifyAll(command) {
+    for (const observerFunction of observers) {
+      observerFunction(command);
+    }
+  }
+
   function setState(newState) {
     Object.assign(state, newState)
   }
 
   function addPlayer(command) {
     addElement(state.players, command);
+    notifyAll({
+      ...command,
+      type: 'add-player'
+    });
   }
 
   function removePlayer(command) {
     removeElement(state.players, command);
+    notifyAll({
+      ...command,
+      type: 'remove-player'
+    });
   }
 
   function addFruit(command) {
@@ -123,6 +149,7 @@ export default function createGame(currentPlayerId) {
   return {
     state,
     setState,
+    subscribe,
     movePlayer,
     addPlayer,
     removePlayer,
