@@ -53,6 +53,7 @@ export default function createGame(currentPlayerId) {
     addElement(state.players, command);
     notifyAll({
       ...command,
+      ...state.players[command.id],
       type: 'add-player'
     });
   }
