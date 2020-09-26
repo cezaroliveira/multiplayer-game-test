@@ -50,10 +50,8 @@ export default function createGame(currentPlayerId) {
   }
 
   function addPlayer(command) {
-    addElement(state.players, command);
-    notifyAll({
+    addElement(state.players, {
       ...command,
-      ...state.players[command.id],
       type: 'add-player'
     });
   }
@@ -66,7 +64,10 @@ export default function createGame(currentPlayerId) {
   }
 
   function addFruit(command) {
-    addElement(state.fruits, command);
+    addElement(state.fruits, {
+      ...command,
+      type: 'add-fruit'
+    });
   }
 
   function removeFruit(command) {
@@ -82,6 +83,10 @@ export default function createGame(currentPlayerId) {
       positionY: command.positionY ? command.positionY : Math.floor(Math.random() * state.screen.height),
     };
     console.log('> Adding element...', command, elementsArray[command.id]);
+    notifyAll({
+      ...command,
+      ...elementsArray[command.id]
+    });
   }
 
   function removeElement(elementsArray, command) {
