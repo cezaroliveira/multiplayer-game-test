@@ -22,28 +22,28 @@
       import renderScreen from './render-screen.js';
 
       const canvas = document.getElementById('canvas');
-      const currentPlayerId = 'player1';
 
       // Define the game elements
-      const game = createGame(currentPlayerId);
-
-      const keyboardListener = createKeyboardListener(currentPlayerId);
-      keyboardListener.subscribe(game.movePlayer);
-
-      renderScreen(game, canvas);
+      const game = createGame();
 
       const socket = io();
-
+      
       // Listen the 'connect' event emmited from socket.io to execute the client render logic
       socket.on('connect', () => {
-        const playerId = socket.id;
-        console.log(`> Player connected on client-side with id ${playerId}`);
+        const currentPlayerId = socket.id;
+        console.log(`> Player connected on client-side with id ${currentPlayerId}`);
+        game.state.currentPlayerId = currentPlayerId;
       });
-
+      
       // Listen the 'setup' event emmited from server-side to execute the client render logic
       socket.on('setup', (state) => {
         console.log(`> Receiving setup event from server...`);
-        game.setState(state)
+        game.setState(state);
+
+        renderScreen(game, canvas);
+
+        const keyboardListener = createKeyboardListener(game.state.currentPlayerId);
+        keyboardListener.subscribe(game.movePlayer);
       });
 
       // Listen the 'add-player' event from server-side to execute the client render logic
