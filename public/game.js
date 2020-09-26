@@ -59,8 +59,7 @@ export default function createGame(currentPlayerId) {
   }
 
   function removePlayer(command) {
-    removeElement(state.players, command);
-    notifyAll({
+    removeElement(state.players, {
       ...command,
       type: 'remove-player'
     });
@@ -71,7 +70,10 @@ export default function createGame(currentPlayerId) {
   }
 
   function removeFruit(command) {
-    removeElement(state.fruits, command);
+    removeElement(state.fruits, {
+      ...command,
+      type: 'remove-fruit'
+    });
   }
 
   function addElement(elementsArray, command) {
@@ -79,10 +81,13 @@ export default function createGame(currentPlayerId) {
       positionX: command.positionX ? command.positionX : Math.floor(Math.random() * state.screen.width),
       positionY: command.positionY ? command.positionY : Math.floor(Math.random() * state.screen.height),
     };
+    console.log('> Adding element...', command, elementsArray[command.id]);
   }
 
   function removeElement(elementsArray, command) {
+    console.log('> Removing element...', command, elementsArray[command.id]);
     delete elementsArray[command.id];
+    notifyAll(command);
   }
 
   function checkCollision() {
@@ -138,10 +143,12 @@ export default function createGame(currentPlayerId) {
     const keyPressed = command.keyPressed;
 
     const currentPlayer = state.players[state.currentPlayerId];
+    console.log('try moving', command, currentPlayer);
     const moveFunction = acceptedMoves[keyPressed];
 
     if (currentPlayer && moveFunction) {
       if (moveFunction(currentPlayer)) {
+        console.log('moved', command, currentPlayer);
         checkCollision();
       }
     }
