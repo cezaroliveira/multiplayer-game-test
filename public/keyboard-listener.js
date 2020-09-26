@@ -2,20 +2,23 @@
  * Factory that create a keyboard listener.
  */
 export default function createKeyboardListener(currentPlayerId) {
-  const observers = [];
+  const state = {
+    observers: [],
+    currentPlayerId: currentPlayerId
+  }
 
   /**
    * Subscribe a function that will execute a command { playerId, keyPressed }.
    */
   function subscribe(observerFunction) {
-    observers.push(observerFunction);
+    state.observers.push(observerFunction);
   }
 
   /**
    * Notify all the subscribe functions to execute a command { playerId, keyPressed }.
    */
   function notifyAll(command) {
-    for (const observerFunction of observers) {
+    for (const observerFunction of state.observers) {
       observerFunction(command);
     }
   }
@@ -26,14 +29,15 @@ export default function createKeyboardListener(currentPlayerId) {
     const keyPressed = event.key;
 
     const command = {
-      id: currentPlayerId,
+      id: state.currentPlayerId,
       keyPressed,
+      type: 'move-player',
     };
 
     notifyAll(command);
   }
 
   return {
-    subscribe,
+    subscribe
   };
 }

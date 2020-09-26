@@ -1,7 +1,7 @@
 /**
  * Render the screen elements
  */
-export default function renderScreen(game, canvas) {
+export default function renderScreen(game, canvas, currentPlayerId) {
   
   const context = canvas.getContext('2d');
   
@@ -18,12 +18,12 @@ export default function renderScreen(game, canvas) {
     for (const elementId in elementsArray) {
       const element = elementsArray[elementId];
       // Define yellow to current player
-      context.fillStyle = game.state.currentPlayerId === elementId ? 'yellow' : color;
+      context.fillStyle = currentPlayerId === elementId ? 'yellow' : color;
       context.fillRect(element.positionX, element.positionY, 1, 1);
     }
   }
 
-  // const currentPlayer = game.state.players[game.state.currentPlayerId];
+  // const currentPlayer = game.state.players[currentPlayerId];
 
   // if (currentPlayer) {
   //   context.fillStyle = '#F0DB4F';
@@ -32,6 +32,6 @@ export default function renderScreen(game, canvas) {
 
   // Callback to update the screen continually
   requestAnimationFrame(() => {
-    renderScreen(game, canvas)
+    renderScreen(game, canvas, currentPlayerId)
   });
 }

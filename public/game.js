@@ -1,7 +1,7 @@
 /**
  * Factory to create the game.
  */
-export default function createGame(currentPlayerId) {
+export default function createGame() {
   // State of game elements
   const state = {
     players: {
@@ -23,8 +23,7 @@ export default function createGame(currentPlayerId) {
     screen: {
       width: 10,
       height: 10
-    },
-    currentPlayerId: currentPlayerId
+    }
   };
 
   const observers = [];
@@ -46,7 +45,7 @@ export default function createGame(currentPlayerId) {
   }
 
   function setState(newState) {
-    Object.assign(state, newState)
+    Object.assign(state, newState);
   }
 
   function addPlayer(command) {
@@ -95,10 +94,10 @@ export default function createGame(currentPlayerId) {
     notifyAll(command);
   }
 
-  function checkCollision() {
+  function checkCollision(currentPlayerId) {
     for (const fruitId in state.fruits) {
       const fruit = state.fruits[fruitId];
-      const player = state.players[state.currentPlayerId];
+      const player = state.players[currentPlayerId];
 
       if (player.positionX === fruit.positionX && player.positionY === fruit.positionY) {
         delete state.fruits[fruitId];
@@ -147,14 +146,18 @@ export default function createGame(currentPlayerId) {
   function movePlayer(command) {
     const keyPressed = command.keyPressed;
 
-    const currentPlayer = state.players[state.currentPlayerId];
-    console.log('try moving', command, currentPlayer);
+    const currentPlayer = state.players[command.id];
+
     const moveFunction = acceptedMoves[keyPressed];
 
     if (currentPlayer && moveFunction) {
       if (moveFunction(currentPlayer)) {
         console.log('moved', command, currentPlayer);
-        checkCollision();
+        checkCollision(command.id);
+        notifyAll({
+          ...command,
+          type: 'move-player'
+        });
       }
     }
   }

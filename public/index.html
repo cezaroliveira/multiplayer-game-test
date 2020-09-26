@@ -27,35 +27,54 @@
       const game = createGame();
 
       const socket = io();
-      
-      // Listen the 'connect' event emmited from socket.io to execute the client render logic
+
+      // Listen the 'connect' event emitted from socket.io to execute the client render logic
       socket.on('connect', () => {
         const currentPlayerId = socket.id;
         console.log(`> Player connected on client-side with id ${currentPlayerId}`);
-        game.state.currentPlayerId = currentPlayerId;
       });
-      
-      // Listen the 'setup' event emmited from server-side to execute the client render logic
+
+      // Listen the custom 'setup' event emitted from server-side to execute the client render logic
+      // When socket (server-side) emit the event, then execute this logic passing the game.state sended by socket.emit()
       socket.on('setup', (state) => {
         console.log(`> Receiving setup event from server...`);
         game.setState(state);
 
-        renderScreen(game, canvas);
+        const currentPlayerId = socket.id;
 
-        const keyboardListener = createKeyboardListener(game.state.currentPlayerId);
+        renderScreen(game, canvas, currentPlayerId);
+
+        const keyboardListener = createKeyboardListener(currentPlayerId);
+
+        // When keyboardListener.notifyAll() is called, then call game.movePlayer() passing the command sended by notifyAll()
         keyboardListener.subscribe(game.movePlayer);
+
+        // When keyboardListener.notifyAll() is called, then emit an event of type command.type passing the command sended by notifyAll()
+        keyboardListener.subscribe((command) => {
+          console.log(`> Emiting event ${command.type} to server-side`, command);
+          socket.emit(command.type, command);
+        });
       });
 
-      // Listen the 'add-player' event from server-side to execute the client render logic
+      // Listen the custom 'add-player' event from server-side to execute the client render logic
       socket.on('add-player', (command) => {
-        console.log(`> Receiving ${command.type} -> ${command.id}`);
+        console.log(`> Receiving ${command.type} -> ${command.id}`, command);
         game.addPlayer(command);
       });
 
-      // Listen the 'remove-player' event from server-side to execute the client render logic
+      // Listen the custom 'remove-player' event from server-side to execute the client render logic
       socket.on('remove-player', (command) => {
-        console.log(`> Receiving ${command.type} -> ${command.id}`);
+        console.log(`> Receiving ${command.type} -> ${command.id}`, command);
         game.removePlayer(command);
+      });
+
+      // Listen the custom 'move-player' event from server-side to execute the client render logic
+      socket.on('move-player', (command) => {
+        console.log(`> Receiving ${command.type} -> ${command.id}`, command);
+        const currentPlayerId = socket.id;
+        if (command.id !== currentPlayerId) {
+          game.movePlayer(command);
+        }
       });
     </script>
   </body>
