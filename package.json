@@ -5,6 +5,10 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
+    "prestart-dev": "npm run lint",
+    "start-dev": "npx nodemon",
+    "start": "node server.js",
+    "lint": "%cd%/node_modules/.bin/eslint **/*.js",
     "test": "echo teste"
   },
   "repository": {
@@ -25,5 +29,11 @@
   "dependencies": {
     "express": "^4.17.1",
     "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "husky": "^4.3.0"
   }
 }
