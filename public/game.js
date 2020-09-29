@@ -26,6 +26,11 @@ export default function createGame() {
     }
   };
 
+  function start() {
+    const frequency = 10000;
+    setInterval(addFruit, frequency);
+  }
+
   const observers = [];
 
   /**
@@ -64,6 +69,7 @@ export default function createGame() {
 
   function addFruit(command) {
     addElement(state.fruits, {
+      id: `fruit_${Math.floor(Math.random() * 10000000)}`,
       ...command,
       type: 'add-fruit'
     });
@@ -78,18 +84,26 @@ export default function createGame() {
 
   function addElement(elementsArray, command) {
     elementsArray[command.id] = {
+      ...command,
+      id: command.id,
       positionX: command.positionX ? command.positionX : Math.floor(Math.random() * state.screen.width),
       positionY: command.positionY ? command.positionY : Math.floor(Math.random() * state.screen.height),
     };
-    console.log('> Adding element...', command, elementsArray[command.id]);
-    notifyAll({
-      ...command,
+
+    console.log('> Adding element...', {
       ...elementsArray[command.id]
     });
+
+    console.log('>>> Comparing command with element added...', command, elementsArray[command.id]);
+
+    notifyAll(elementsArray[command.id]);
   }
 
   function removeElement(elementsArray, command) {
-    console.log('> Removing element...', command, elementsArray[command.id]);
+    console.log('> Removing element...', {
+      ...command,
+      ...elementsArray[command.id]
+    });
     delete elementsArray[command.id];
     notifyAll(command);
   }
@@ -165,6 +179,7 @@ export default function createGame() {
   return {
     state,
     setState,
+    start,
     subscribe,
     movePlayer,
     addPlayer,

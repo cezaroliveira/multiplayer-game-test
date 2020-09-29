@@ -76,6 +76,18 @@
           game.movePlayer(command);
         }
       });
+
+      // Listen the custom 'add-fruit' event from server-side to execute the client render logic
+      socket.on('add-fruit', (command) => {
+        console.log(`> Receiving ${command.type} -> ${command.id}`, command);
+        game.addFruit(command);
+      });
+
+      // Listen the custom 'remove-fruit' event from server-side to execute the client render logic
+      socket.on('remove-fruit', (command) => {
+        console.log(`> Receiving ${command.type} -> ${command.id}`, command);
+        game.removeFruit(command);
+      });
     </script>
   </body>
 </html>
